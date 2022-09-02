@@ -28,6 +28,7 @@ GtkWidget *console;
 static int page_width		= 1500; 
 static int page_height		=  750;
 static int console_width	=  300; 
+static gdouble last_x, last_y;
 static cairo_surface_t *cairo_surface = NULL; // the surface to store scribbles
 /*------------------------------------------------------------------------------
 
@@ -140,6 +141,12 @@ static inline void draw_brush(GtkWidget *widget, gdouble x, gdouble y)
 {
 	cairo_t *cairo_context;
 	
+	if(last_x == 0 && last_y == 0)
+	{
+		last_x = x; last_y = y;
+		return;
+	}
+
 	cairo_context = cairo_create(cairo_surface);
 
 	// default is black, this is blue
@@ -154,10 +161,20 @@ static inline void draw_brush(GtkWidget *widget, gdouble x, gdouble y)
 	);	
 	
 	cairo_fill(cairo_context);
+	
+	//cairo_set_source_rgb(cairo_context, 1.0, 0.0, 0.0);
+	cairo_set_line_width(cairo_context, 2.0);
+	cairo_move_to(cairo_context, last_x, last_y);
+	cairo_line_to(cairo_context, x, y);	// connect the dots
+	cairo_stroke_preserve(cairo_context);
+	
 	cairo_destroy(cairo_context);
 
 	// invalidate the affected region of the drawing area
-	gtk_widget_queue_draw_area(widget, x - 2, y - 2, 4, 4);
+	//gtk_widget_queue_draw_area(widget, x - 2, y - 2, 4, 4);
+	gtk_widget_queue_draw(drawing_area);
+
+	last_x = x; last_y = y;
 }
 /*------------------------------------------------------------------------------
 	https://stackoverflow.com/questions/48557583/
@@ -195,6 +212,11 @@ static gboolean button_press_event_callback
 	{
 		initialize_cairo_surface();
 		gtk_widget_queue_draw(widget);
+	}
+
+	if(event->button == GDK_BUTTON_PRIMARY)
+	{
+		last_x = 0; last_y = 0;	// reset the line drawing
 	}
 
 	return TRUE;
