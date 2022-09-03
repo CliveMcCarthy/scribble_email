@@ -7,4 +7,4 @@ This program for Linux uses Gtk, Curl, and Jpeg libraries. The program has a ver
 
 The program has no way to erase writing mistakes -- just scratch things out. You can't change the color of the ink nor can you change the paper. You don't need these things. It's just a scribbled note to a friend.
 
-The table of names and email addresses is embeded in the code. You will need to edit these to suit your needs. The column of buttons accomodates twenty friends. You don't have MORE than twenty friends -- the others are acquaintences. This is not Facebook.
+The table of names and email addresses is embeded in the code. You will need to edit these to suit your needs. The column of buttons accomodates twenty friends. You don't have MORE than twenty friends -- the others are acquaintances. This is not Facebook.
