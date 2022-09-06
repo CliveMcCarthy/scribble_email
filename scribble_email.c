@@ -267,18 +267,31 @@ static gboolean draw_callback
 	return FALSE;
 }
 /*------------------------------------------------------------------------------
-
+	
 ------------------------------------------------------------------------------*/
 static void email_person(GtkWidget *widget, gpointer email_address)
 {
-	GdkPixbuf *pixbuf;
+	GdkCursor *watchCursor;
+	GdkPixbuf *email_pixbuf;
+	GdkDisplay *display;
+	GdkWindow *gdk_window;
 	
-	pixbuf = gdk_pixbuf_get_from_surface
+	email_pixbuf = gdk_pixbuf_get_from_surface
 	(
 		cairo_surface, 0, 0, page_width, page_height
 	);
 	
-	email_pixbuf_scribble(pixbuf, (char *)email_address);
+	{
+		display		= gdk_display_get_default();
+		watchCursor	= gdk_cursor_new_for_display(display, GDK_WATCH);
+		gdk_window	= gtk_widget_get_window(GTK_WIDGET(window));
+		while(gtk_events_pending()) gtk_main_iteration();
+		gdk_window_set_cursor(gdk_window, watchCursor);
+
+		email_pixbuf_scribble(email_pixbuf, (char *)email_address);
+		
+		gdk_window_set_cursor(gdk_window, NULL);
+	}
 }
 /*------------------------------------------------------------------------------
 
